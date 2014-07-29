@@ -42,16 +42,17 @@ class ValueIterationAgent(ValueEstimationAgent):
         # Write value iteration code here
         "*** YOUR CODE HERE ***"
         for i in range(0, self.iterations):
+            values = util.Counter()
             for state in self.mdp.getStates():
                 if self.mdp.isTerminal(state):
-                    self.values[state] = 0
+                    values[state] = 0
                     continue
 
                 maxValue = -1 * float('inf')
                 actions = self.mdp.getPossibleActions(state)
                 
                 if not actions:
-                    self.values[state] = 0
+                    values[state] = 0
                     continue
                 
                 for action in actions:
@@ -59,8 +60,8 @@ class ValueIterationAgent(ValueEstimationAgent):
                     if currValue > maxValue:
                         maxValue = currValue
                 
-                self.values[state] = maxValue
-            
+                values[state] = maxValue
+            self.values = values
 
     def getValue(self, state):
         """
