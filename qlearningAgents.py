@@ -47,8 +47,9 @@ class QLearningAgent(ReinforcementAgent):
         """
         "*** YOUR CODE HERE ***"
         if state in self.qValues and self.qValues[state]:
-            if action in self.qValues[state]:
-                return self.qValues[state][action]
+            valueList = self.qValues[state]
+            if action in valueList:
+                return valueList[action]
             else:
                 return 0.0
         else:
@@ -67,7 +68,8 @@ class QLearningAgent(ReinforcementAgent):
             reward = self.getQValue(state, action)
             if reward > maxReward:
                 maxReward = reward
-        if maxReward == float('inf'):
+                
+        if maxReward == float('-inf'):
             return 0.0
         
         return maxReward
@@ -83,7 +85,7 @@ class QLearningAgent(ReinforcementAgent):
         if not actions:
             return None
         
-        maxValue = float('inf')
+        maxValue = float('-inf')
         maxAction = None
         
         for action in actions:
@@ -91,11 +93,6 @@ class QLearningAgent(ReinforcementAgent):
             if maxValue < value:
                 maxValue = value
                 maxAction = action
-            elif maxValue == value:
-                policy = random.choice([maxAction, action])
-                if policy == action:
-                    maxAction = action
-                    maxValue = value
         
         return maxAction
 
@@ -141,8 +138,7 @@ class QLearningAgent(ReinforcementAgent):
         if state not in self.qValues:
             self.qValues[state] = {}
         
-        if action not in self.qValues[state]:
-            self.qValues[state][action] = newQValue
+        self.qValues[state][action] = newQValue
 
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)
