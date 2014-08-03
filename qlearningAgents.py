@@ -46,10 +46,9 @@ class QLearningAgent(ReinforcementAgent):
           or the Q node value otherwise
         """
         "*** YOUR CODE HERE ***"
-        if state in self.qValues and len(self.qValues[state]) > 0:
-            valueList = self.qValues[state]
-            if action in valueList:
-                return valueList[action]
+        if state in self.qValues and self.qValues[state]:
+            if action in self.qValues[state]:
+                return self.qValues[state][action]
             else:
                 return 0.0
         else:
@@ -81,7 +80,7 @@ class QLearningAgent(ReinforcementAgent):
         """
         "*** YOUR CODE HERE ***"
         actions = self.getLegalActions(state)
-        if actions is None:
+        if not actions:
             return None
         
         maxValue = float('inf')
@@ -113,11 +112,16 @@ class QLearningAgent(ReinforcementAgent):
         """
         # Pick Action
         legalActions = self.getLegalActions(state)
-        action = None
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
-
-        return action
+        coinFace = util.flipCoin(self.epsilon)
+        
+        if not legalActions:
+            return None
+        
+        if coinFace:
+            return self.getPolicy(state)
+        
+        return random.choice(legalActions)
 
     def update(self, state, action, nextState, reward):
         """
@@ -129,7 +133,16 @@ class QLearningAgent(ReinforcementAgent):
           it will be called on your behalf
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        oldQValue = self.getQValue(state, action)
+        value = self.getValue(nextState)
+        
+        newQValue = (1 - self.alpha) * oldQValue + self.alpha * (reward + self.discount * value)
+        
+        if state not in self.qValues:
+            self.qValues[state] = {}
+        
+        if action not in self.qValues[state]:
+            self.qValues[state][action] = newQValue
 
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)
