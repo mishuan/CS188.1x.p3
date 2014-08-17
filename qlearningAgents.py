@@ -115,7 +115,7 @@ class QLearningAgent(ReinforcementAgent):
         if not legalActions:
             return None
         
-        if coinFace:
+        if not coinFace:
             return self.getPolicy(state)
         
         return random.choice(legalActions)
